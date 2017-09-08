@@ -43,10 +43,6 @@
       <HintPath>..\DLLS\interop.shdocvw.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="itextsharp, Version=5.4.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DLLS\itextsharp.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -71,7 +67,6 @@
     <Compile Include="crawler\CrawlerFactory.cs" />
     <Compile Include="crawler\DetectionCrawler.cs" />
     <Compile Include="crawler\HTMLCrawler.cs" />
-    <Compile Include="crawler\PdfCrawler.cs" />
     <Compile Include="crawler\ScanCrawler.cs" />
     <Compile Include="crawler\DefaultCrawler.cs" />
     <Compile Include="crawler\entity\ScanEntity.cs" />

@@ -23,18 +23,6 @@ namespace DiagnoseAssistant1.crawler
                     + "', 患者就诊信息Episode==null is " + (Crawler.episode == null));
                 return crawler;
             }
-            //PDF报告爬虫
-            else if (url.ToUpper().EndsWith(".PDF"))
-            {
-                PdfCrawler crawler = new PdfCrawler();
-                int dotIdx = url.LastIndexOf(".");
-                int slashIdx = url.LastIndexOf("/");            
-                string fileName = url.Substring(slashIdx + 1, (dotIdx - slashIdx - 1));
-                crawler.fileName = fileName;
-                crawler.url = url;
-                log.WriteLog("完成PDF报告爬虫构造，开始爬取PDF报告内容。fileName=" + fileName); 
-                return crawler;
-            }
             //检查列表爬虫
             else if (EpisodeRegexUtils.matchUrl(url, @"epr[.]chart[.]csp[?]PatientID=(\d+?)[&]EpisodeID=(\d+?)[&]EpisodeIDs=[&]mradm=(\d+?)[&]ChartID=23"))
             {                
