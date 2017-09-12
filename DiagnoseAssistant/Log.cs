@@ -10,7 +10,7 @@ namespace DiagnoseAssistant1
         string fileName;
         public Log()
         {
-            this.fileName = "DiagnoseAssistant1.txt";
+            this.fileName = "DiagnoseAssistant1.log";
         }
         public Log(string fileName)
         {

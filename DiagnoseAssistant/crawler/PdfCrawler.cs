@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +13,14 @@ namespace DiagnoseAssistant1.crawler
 {
     class PdfCrawler : Crawler
     {
-        Log log = new Log("PdfCrawler.txt");
+        Log log = new Log("PdfCrawler.log");
         public string fileName { get; set;} //文件名
         public string url { get; set; } //访问路径
         public override void crawl(IHTMLDocument2 document)
         {
             try
             {
-                Dictionary<string, string> scanItem = ReadPdfContent();
+                Dictionary<string, string> scanItem = ExtractTextFromPdf();
                 string jcsj = get(scanItem, "JCSJ");
                 string bgsj = get(scanItem, "BGSJ");
                 string updateSql = "update tb_hyft_jcjl set JCSJ = '" + jcsj + "', BGSJ='" + bgsj
@@ -28,14 +29,44 @@ namespace DiagnoseAssistant1.crawler
                 log.WriteLog("更新报告检查时间与报告时间、报告日期，sql=" + updateSql);
                 sqlOp.executeUpdate(updateSql);
                 //log.WriteLog("读取到的PDF内容:" + contents.ToString());
+                ExtractImagesFromPdf();
             }
             catch (Exception e)
             {
                 log.WriteLog("读取PDF异常:" + e.ToString() + e.StackTrace);
             }
         }
-
-        public Dictionary<string, string> ReadPdfContent()
+        public Dictionary<string, string> ExtractImagesFromPdf()
+        {
+            //创建图片保存目录
+            string imageDirectory = "c:\\crawler\\images";
+            if (!Directory.Exists(imageDirectory))
+            {
+                Directory.CreateDirectory(imageDirectory);
+            }
+            Dictionary<string, string> scanItem = new Dictionary<string, string>();
+            Dictionary<string, System.Drawing.Image> images = PdfUtils.PdfImageExtractor.ExtractImages(new Uri(url));
+            log.WriteLog("读取到的pdf文件：");
+            foreach (var image in images)
+            {
+                log.WriteLog(image.Key);
+                string imagePath = imageDirectory + "\\" + image.Key;
+                //保存图片文件
+                image.Value.Save(imagePath);
+                try
+                {
+                    //图片识别
+                    string textFromImage = OCR.Identify.StartIdentifyingCaptcha(imagePath, imageDirectory, 200);
+                    log.WriteLog("text from image:" + textFromImage);
+                }
+                catch (Exception e)
+                {
+                    log.WriteLog("Exception occured when recognizing image["+imagePath+"] " + e.ToString() + e.Source);
+                }
+            }
+            return scanItem;
+        }
+        public Dictionary<string, string> ExtractTextFromPdf()
         {
             PdfReader pdfReader = new PdfReader(new Uri(url));
             int numberOfPages = pdfReader.NumberOfPages;
@@ -43,17 +74,13 @@ namespace DiagnoseAssistant1.crawler
             ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
             Dictionary<string, string> scanItem = new Dictionary<string, string>();
             string page;
-            
             for (int i = 1; i <= numberOfPages; ++i)
             {
                 page = iTextSharp.text.pdf.parser.PdfTextExtractor.GetTextFromPage(pdfReader, i, strategy);
                 string[] linesOfPage = page.Split('\n');
-                string curLine = null; //当前行
-                string preLine = null;//前一行
                 foreach (string line in linesOfPage)
                 {
-                    curLine = line;
-                    log.WriteLog("line=" + line);
+                    //log.WriteLog("line=" + line);
                     try
                     {
                         if (line.Contains("检查时间"))
@@ -74,12 +101,8 @@ namespace DiagnoseAssistant1.crawler
                     {
                         log.WriteLog("【"+line+"】解析失败：" + e.ToString() + e.StackTrace);
                     }
-                    
-                    
-                    preLine = line;
                 }
             }
-            
             pdfReader.Close();
             return scanItem;
         }

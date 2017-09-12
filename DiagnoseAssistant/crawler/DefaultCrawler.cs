@@ -5,7 +5,7 @@ namespace DiagnoseAssistant1.crawler
 {
     class DefaultCrawler : HTMLCrawler
     {
-        Log log = new Log("DefaultCrawler.txt");
+        Log log = new Log("DefaultCrawler.log");
 
         public override void parseElement(IHTMLElement item)
         {

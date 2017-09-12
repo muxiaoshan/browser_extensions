@@ -81,13 +81,15 @@ namespace DiagnoseAssistant1
                 if (URL != null)
                 {
                     string urlStr = URL.ToString();
+                    
                     //访问电子病历页面
                     if (urlStr.Contains("websys.csp?a=a&TMENU=51686"))
                     {
                         Episode episode = EpisodeRegexUtils.getEpisodeFromUrl(urlStr);
                         log.WriteLog("访问门诊电子病历页面，暂存患者编码[" + episode.PatientID + "]与就诊编码[" + episode.EpisodeID + "]");
                         _episode = episode;
-                    }                    
+                    }
+                    /* */
                     //访问门诊患者列表页面
                     else if (urlStr.Contains("websys.csp?a=a&TMENU=50136"))
                     {
@@ -97,6 +99,7 @@ namespace DiagnoseAssistant1
                             accessFzzl();
                         }
                     }
+                     /* */
                     //if (EpisodeRegexUtils.matchUrl(urlStr, "RisWeb3/ReportContent[.]aspx(.+?)LOC=549[&]STYLE=RIS3[-]4$"))
                     //检查报告
                     else if (urlStr.Contains("RisWeb3/ReportContent.aspx") || urlStr.Contains("csp/epr.chart.csp?PatientID=")
@@ -134,9 +137,9 @@ namespace DiagnoseAssistant1
                 MessageBox.Show(ex.Message);
             }
         }
+        
         #endregion
-        #region 跳转前事件        
-        /*
+        #region 跳转前事件
         /// <summary>
         /// XP IE6下页面跳转前绑定事件
         /// </summary>
@@ -163,7 +166,7 @@ namespace DiagnoseAssistant1
                     }
                 }
             }
-        }*/
+        }
         /// <summary>
         /// Win 7 IE11下页面跳转前事件
         /// </summary>
@@ -223,11 +226,12 @@ namespace DiagnoseAssistant1
                         ((DWebBrowserEvents2_Event)browser).BeforeNavigate2 +=
                             new DWebBrowserEvents2_BeforeNavigate2EventHandler(this.OnBeforeNavigate2);
                     }
-                    /*else
+                    else
                     {
                         axDocumentV1 = (WebBrowser_V1)browser;				// work-around
                         axDocumentV1.BeforeNavigate += new DWebBrowserEvents_BeforeNavigateEventHandler(this.OnBeforeNavigate);		// work-around
-                    }*/
+                        //axDocumentV1.BeforeNavigate += this.OnBeforeNavigate;   // work-around
+                    }
                 }
                 else
                 {
@@ -238,10 +242,11 @@ namespace DiagnoseAssistant1
                         ((DWebBrowserEvents2_Event)browser).BeforeNavigate2 -=
                             new DWebBrowserEvents2_BeforeNavigate2EventHandler(this.OnBeforeNavigate2);
                     }
-                    /*else
+                    else
                     {
                         axDocumentV1.BeforeNavigate -= new DWebBrowserEvents_BeforeNavigateEventHandler(this.OnBeforeNavigate);
-                    }*/
+                        //axDocumentV1.BeforeNavigate -= this.OnBeforeNavigate;
+                    }
                     browser = null;
                 }
             }

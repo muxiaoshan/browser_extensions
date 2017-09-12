@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiagnoseAssistant1", "DiagnoseAssistant\DiagnoseAssistant1.csproj", "{66870A1F-827B-495A-9826-F4B41671ED3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpTest", "..\browser\BHO\HisCrawler\InternetExplorerExtension\CSharpTest\CSharpTest.csproj", "{0074C3ED-3927-46D5-9767-AB48F1CC61F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{66870A1F-827B-495A-9826-F4B41671ED3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66870A1F-827B-495A-9826-F4B41671ED3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66870A1F-827B-495A-9826-F4B41671ED3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0074C3ED-3927-46D5-9767-AB48F1CC61F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0074C3ED-3927-46D5-9767-AB48F1CC61F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0074C3ED-3927-46D5-9767-AB48F1CC61F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0074C3ED-3927-46D5-9767-AB48F1CC61F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

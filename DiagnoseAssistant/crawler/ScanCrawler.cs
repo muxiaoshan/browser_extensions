@@ -22,7 +22,7 @@ namespace DiagnoseAssistant1.crawler
     /// </summary>
     class ScanListCrawler : ScanCrawler
     {
-        Log log = new Log("ScanListCrawler.txt");
+        Log log = new Log("ScanListCrawler.log");
         
         public override void parseElement(IHTMLElement item)
         {
@@ -152,7 +152,7 @@ namespace DiagnoseAssistant1.crawler
     /// </summary>
     class UltrasonicCrawler : ScanCrawler
     {
-        Log log = new Log("UltrasonicCrawler.txt");
+        Log log = new Log("UltrasonicCrawler.log");
         
         public override void parseElement(IHTMLElement item)
         {
