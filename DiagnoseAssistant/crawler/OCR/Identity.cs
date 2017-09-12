@@ -47,7 +47,7 @@ namespace DiagnoseAssistant1.crawler.OCR
                                                             String.Format(@"magick convert -compress none -depth 8 -alpha off -scale {0}% -colorspace gray {1} {2}\captcha.tif",scale,img_path,save_dir),  
                               
                                                             // 识别图片  
-                                                            String.Format(@"tesseract {0}\captcha.tif {0}\{1} -l chi_sim+eng+equ",save_dir, Path.GetFileNameWithoutExtension(img_path)),  
+                                                            String.Format(@"tesseract {0}\captcha.tif {0}\{1} -l chi_sim+eng",save_dir, Path.GetFileNameWithoutExtension(img_path)),  
   
                                                             "exit"});
 
