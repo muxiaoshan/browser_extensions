@@ -11,6 +11,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using DiagnoseAssistant1.crawler;
 
+
 namespace DiagnoseAssistant1
 {
     [ComVisible(true)]
@@ -93,8 +94,14 @@ namespace DiagnoseAssistant1
                     {
                         if (_episode != null && ieVersion < 11) //ie 11以下患者列表页面加载完后打开辅助诊疗；ie 11及以上则在患者列表页面跳转前就打开
                         {
-                            log.WriteLog("访问门诊患者列表页面。已查看并暂存的门诊患者电子病历数，episode=" + _episode.ToString() + "，非null则访问辅助诊疗页面。");
-                            accessFzzl();
+                            bool whiteuser = Authenticate.isWhiteUser(username);
+                            log.WriteLog("访问门诊患者列表页面。已查看并暂存的门诊患者电子病历数，episode=" + _episode.ToString()
+                                        + "，非null && 白名单用户=" + whiteuser + "则访问辅助诊疗页面。");
+                            if (whiteuser)
+                            {
+                                accessFzzl();
+                            } 
+                            
                         }
                     }
                     //if (EpisodeRegexUtils.matchUrl(urlStr, "RisWeb3/ReportContent[.]aspx(.+?)LOC=549[&]STYLE=RIS3[-]4$"))
@@ -186,8 +193,14 @@ namespace DiagnoseAssistant1
                 {
                     if (_episode != null)
                     {
-                        log.WriteLog("访问门诊患者列表页面。已查看并暂存的门诊患者电子病历数，episode=" + _episode.ToString() + "，非null则访问辅助诊疗页面。");
-                        accessFzzl();
+                        bool whiteuser = Authenticate.isWhiteUser(username);
+                        log.WriteLog("访问门诊患者列表页面。已查看并暂存的门诊患者电子病历数：episode==" + _episode.ToString()
+                                    + ", 当前用户：【"+username+"】，whiteuser==" + whiteuser 
+                                    + ", if (episode!=null && whiteuser==true) then {访问辅助诊疗页面。}");
+                        if (whiteuser)
+                        {
+                            accessFzzl();
+                        } 
                     }
                 }
             }
@@ -361,8 +374,8 @@ namespace DiagnoseAssistant1
                 //固定GUID，IE Extension的CLSID
                 key.SetValue("CLSID", "{1FBA04EE-3024-11d2-8F1F-0000F87ABD16}");
                 key.SetValue("ClsidExtension", guid);
-                key.SetValue("Icon", "C:\\DiagnoseAssistantIcon.ico");
-                key.SetValue("HotIcon", "C:\\DiagnoseAssistantIcon.ico");
+                key.SetValue("Icon", "C:\\fzzl\\DiagnoseAssistantIcon.ico");
+                key.SetValue("HotIcon", "C:\\fzzl\\DiagnoseAssistantIcon.ico");
                 key.SetValue("Default Visible", "Yes");
                 key.SetValue("MenuText", "&辅助诊疗");
                 key.SetValue("ToolTip", "辅助诊疗");

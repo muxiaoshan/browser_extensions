@@ -63,6 +63,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authenticate.cs" />
+    <Compile Include="config\Configuration.cs" />
     <Compile Include="crawler\Crawler.cs" />
     <Compile Include="crawler\CrawlerFactory.cs" />
     <Compile Include="crawler\DetectionCrawler.cs" />

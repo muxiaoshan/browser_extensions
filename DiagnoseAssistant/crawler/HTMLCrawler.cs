@@ -8,7 +8,7 @@ namespace DiagnoseAssistant1.crawler
 {
     abstract class HTMLCrawler : Crawler
     {
-        Log log = new Log("HTMLCrawler.txt");
+        Log log = new Log("HTMLCrawler.log");
         public override void crawl(IHTMLDocument2 document)
         {
             ReadDoc(document);
