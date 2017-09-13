@@ -366,8 +366,8 @@ namespace DiagnoseAssistant1
                 //固定GUID，IE Extension的CLSID
                 key.SetValue("CLSID", "{1FBA04EE-3024-11d2-8F1F-0000F87ABD16}");
                 key.SetValue("ClsidExtension", guid);
-                key.SetValue("Icon", "C:\\DiagnoseAssistantIcon.ico");
-                key.SetValue("HotIcon", "C:\\DiagnoseAssistantIcon.ico");
+                key.SetValue("Icon", "C:\\fzzl\\DiagnoseAssistantIcon.ico");
+                key.SetValue("HotIcon", "C:\\fzzl\\DiagnoseAssistantIcon.ico");
                 key.SetValue("Default Visible", "Yes");
                 key.SetValue("MenuText", "&辅助诊疗");
                 key.SetValue("ToolTip", "辅助诊疗");

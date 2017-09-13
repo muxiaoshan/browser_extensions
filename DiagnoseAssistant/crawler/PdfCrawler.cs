@@ -39,7 +39,7 @@ namespace DiagnoseAssistant1.crawler
         public Dictionary<string, string> ExtractImagesFromPdf()
         {
             //创建图片保存目录
-            string imageDirectory = "c:\\crawler\\images";
+            string imageDirectory = "c:\\fzzl\\crawler\\images";
             if (!Directory.Exists(imageDirectory))
             {
                 Directory.CreateDirectory(imageDirectory);

@@ -6,7 +6,7 @@ namespace DiagnoseAssistant1
     class Log
     {
         private object _logLock = new object();
-        const string _fileRoot = "c:\\";
+        const string _fileRoot = "c:\\fzzl";
         string fileName;
         public Log()
         {
