@@ -3,12 +3,12 @@
 2、执行.NetFramewor的RegAsm.exe卸载dll
 "C:\Windows\Microsoft.NET\Framework\v4.0.30128\RegAsm.exe" /unregister "DiagnoseAssistant1.dll"
 
-3、执行.NetFramewor的RegAsm.exe注册dll（注册时要把itextsharp.dll和DiagnoseAssistant1.dll放在同一个目录）
+3、执行.NetFramewor的RegAsm.exe注册dll
 "C:\Windows\Microsoft.NET\Framework\v4.0.30128\RegAsm.exe" /codebase "DiagnoseAssistant1.dll"
 
 4、把DiagnoseAssistantIcon.ico存放到C盘根目录
 
-5、把mysql.data.dll，itextsharp.dll存放到IE安装目录（例如C:\Program Files (x86)\Internet Explorer）
+5、把mysql.data.dll存放到IE安装目录（例如C:\Program Files (x86)\Internet Explorer）
 
 6、把fzzl文件夹放置到c盘根目录
 
