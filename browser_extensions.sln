@@ -26,6 +26,27 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "chrome_close", "http://loca
 		SlnRelativePath = "chrome_close\"
 	EndProjectSection
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "deploy", "http://localhost:49699", "{83FE5A84-ABB2-4B02-85E1-05CC94822F31}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_49699"
+		Debug.AspNetCompiler.PhysicalPath = "deploy\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_49699\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_49699"
+		Release.AspNetCompiler.PhysicalPath = "deploy\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_49699\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "deploy\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +61,10 @@ Global
 		{2C7D708C-4CFB-4A37-B564-C06D0F9010F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C7D708C-4CFB-4A37-B564-C06D0F9010F9}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C7D708C-4CFB-4A37-B564-C06D0F9010F9}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{83FE5A84-ABB2-4B02-85E1-05CC94822F31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83FE5A84-ABB2-4B02-85E1-05CC94822F31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83FE5A84-ABB2-4B02-85E1-05CC94822F31}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{83FE5A84-ABB2-4B02-85E1-05CC94822F31}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
