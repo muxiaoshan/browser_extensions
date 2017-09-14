@@ -1,0 +1,25 @@
+﻿{
+    "manifest_version": 2,
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA+aQkrof/eLB1JsViHro1UPnvdNthj71Rkq63NmZTjWQW9pwCH54Zmyk3fX87fxE74gp0cZ3GyzM7dknQ4N1Q914Q4SWBkhujnB09/Nth9xFJ5aHomqB5Wgs+0BryHceT3hDJ3UeK39CQrF4YqQQepAeqZ9Z3fsvHgfoQ5hK7P9sRAmfj7al2yatEfMW4RuSMqP+qJRSMi+tOnAJWbgiIE88Qc7mS+x9pYWEP5pVbBAekD8Bcki7Z3a4BdOFHfQT/s4CAAsIg3kPgNRWakVfxiXmv2ndHxpr4BSc+4Xh69MPekQbIVOESBTyequ2QwRPBzPv/3RsJ44CbOESgBmQX9wIDAQAB",
+    "name": "辅助诊疗",
+    "description": "辅助诊疗扩展程序，优化Chrome浏览器下辅助诊疗系统的访问",
+    "version": "1.0",
+
+    "browser_action": {
+        "default_icon": "DiagnoseAssistantIcon.png"
+        //"default_popup": "popup.html"
+    },
+    "permissions": [
+        "tabs",
+        "activeTab"
+        //"http://*/*",
+        //"https://*/*"
+        //,"*://localhost:8080/*"
+    ],
+    "background": {
+        "scripts": [ "background.js" ]
+    },
+    "externally_connectable": {
+        "matches": ["*://172.26.111.12/*"]
+    }
+}
