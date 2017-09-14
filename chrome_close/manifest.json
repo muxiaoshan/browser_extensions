@@ -20,6 +20,6 @@
         "scripts": [ "background.js" ]
     },
     "externally_connectable": {
-        "matches": ["*://localhost/*"]
+        "matches": ["*://172.26.111.12/*"]
     }
 }
