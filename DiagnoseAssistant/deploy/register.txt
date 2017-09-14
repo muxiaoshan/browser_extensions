@@ -6,7 +6,7 @@
 3、执行.NetFramewor的RegAsm.exe注册dll
 "C:\Windows\Microsoft.NET\Framework\v4.0.30128\RegAsm.exe" /codebase "DiagnoseAssistant1.dll"
 
-4、把DiagnoseAssistantIcon.ico存放到C盘根目录
+#4、把DiagnoseAssistantIcon.ico存放到C盘根目录
 
 5、把mysql.data.dll存放到IE安装目录（例如C:\Program Files (x86)\Internet Explorer）
 
