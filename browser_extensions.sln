@@ -49,6 +49,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "deploy", "http://localhost:
 		SlnRelativePath = "deploy\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoAccess", "AutoAccess\AutoAccess.csproj", "{0BD23FCE-8192-4D2A-A543-B13D6F3FBC75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{83FE5A84-ABB2-4B02-85E1-05CC94822F31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83FE5A84-ABB2-4B02-85E1-05CC94822F31}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{83FE5A84-ABB2-4B02-85E1-05CC94822F31}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{0BD23FCE-8192-4D2A-A543-B13D6F3FBC75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD23FCE-8192-4D2A-A543-B13D6F3FBC75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD23FCE-8192-4D2A-A543-B13D6F3FBC75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD23FCE-8192-4D2A-A543-B13D6F3FBC75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
