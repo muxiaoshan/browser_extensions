@@ -39,10 +39,12 @@ namespace DiagnoseAssistant1.crawler.OCR
             //int captcha_length = 6;         // 验证码长度(参数：提高识别成功率)  
 
             //int scale = 730;                // 放大处理比率(参数：提高识别成功率)  
-
-            
-            // 识别验证码(一、安装ImageMagick，二、拷备tesseract目录至应用程序下)  
-            Common.StartProcess("cmd.exe", new string[] {   // "cd tesseract" ,  //已把命令配置到path
+            // 识别验证码(一、安装ImageMagick，二、拷备tesseract目录至应用程序下) 
+           
+           
+            try
+            {
+                Common.StartProcess("cmd.exe", new string[] {   // "cd tesseract" ,  //已把命令配置到path
                                                             // 输换图片  
                                                             String.Format(@"magick convert -compress none -depth 8 -alpha off -scale {0}% -colorspace gray {1} {2}\captcha.tif",scale,img_path,save_dir),  
                               
@@ -50,7 +52,11 @@ namespace DiagnoseAssistant1.crawler.OCR
                                                             String.Format(@"tesseract {0}\captcha.tif {0}\{1} -l chi_sim+eng",save_dir, Path.GetFileNameWithoutExtension(img_path)),  
   
                                                             "exit"});
-
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
             // 读取识别的验证码
             StreamReader reader = new StreamReader(String.Format(@"{0}\{1}.txt", save_dir, Path.GetFileNameWithoutExtension(img_path)));
 

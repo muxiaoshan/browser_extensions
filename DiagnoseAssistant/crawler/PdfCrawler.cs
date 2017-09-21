@@ -29,7 +29,14 @@ namespace DiagnoseAssistant1.crawler
                 log.WriteLog("更新报告检查时间与报告时间、报告日期，sql=" + updateSql);
                 sqlOp.executeUpdate(updateSql);
                 //log.WriteLog("读取到的PDF内容:" + contents.ToString());
-                ExtractImagesFromPdf();
+                Dictionary<string, string> imagesItem = ExtractImagesFromPdf();
+                string YXBXHJCSJ = get(imagesItem, "YXBXHJCSJ");
+                string JCZDHTS = get(imagesItem, "JCZDHTS");
+                string updateJCZDSql = "update tb_hyft_jcjl set YXBXHJCSJ = '" + YXBXHJCSJ + "', JCZDHTS='" + JCZDHTS
+                            + "' where JCH='" + fileName + "'";
+                sqlOp.executeUpdate(updateJCZDSql);
+                log.WriteLog("更新影像与建议数据，sql=" + updateJCZDSql);
+                sqlOp.executeUpdate(updateJCZDSql);
             }
             catch (Exception e)
             {
@@ -47,16 +54,28 @@ namespace DiagnoseAssistant1.crawler
             Dictionary<string, string> scanItem = new Dictionary<string, string>();
             Dictionary<string, System.Drawing.Image> images = PdfUtils.PdfImageExtractor.ExtractImages(new Uri(url));
             log.WriteLog("读取到的pdf文件：");
+           
             foreach (var image in images)
             {
                 log.WriteLog(image.Key);
+                int imageIndex = image.Key.IndexOf('.')-1;
+                String imageDi = image.Key.Substring(imageIndex, 1);
                 string imagePath = imageDirectory + "\\" + image.Key;
+                log.WriteLog("image+imagePath:" + imagePath);
                 //保存图片文件
                 image.Value.Save(imagePath);
                 try
                 {
                     //图片识别
                     string textFromImage = OCR.Identify.StartIdentifyingCaptcha(imagePath, imageDirectory, 200);
+                    if (imageDi != null && "1".Equals(imageDi))
+                    {
+                        scanItem.Add("YXBXHJCSJ", textFromImage);
+                    }
+                    if (imageDi != null && "2".Equals(imageDi))
+                    {
+                        scanItem.Add("JCZDHTS", textFromImage);
+                    }
                     log.WriteLog("text from image:" + textFromImage);
                 }
                 catch (Exception e)

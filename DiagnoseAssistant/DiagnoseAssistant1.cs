@@ -35,7 +35,7 @@ namespace DiagnoseAssistant1
         //页面加载完成，包括iframe内页面加载后调用
         void OnDocumentComplete(object pDisp, ref object URL)
         {
-            //log.WriteLog("DiagnoseAssistant1 OnDocumentComplete. URL:" + URL);
+            log.WriteLog("DiagnoseAssistant1 OnDocumentComplete. URL:" + URL);
             try
             {
                 if (URL != null)
@@ -65,6 +65,21 @@ namespace DiagnoseAssistant1
                         || urlStr.ToUpper().EndsWith(".PDF"))
                     {
                         crawl(urlStr);
+                    }
+                    else if (urlStr.Equals("http://172.26.102.9/ekgweb/service/ShowEKGReport.aspx?OID=2412431||18"))
+                    {
+                        
+                        registerMonitor();
+                        HTMLDocument document = (HTMLDocument)browser.Document;
+
+
+                        IHTMLElement head = (IHTMLElement)((IHTMLElementCollection)document.all.tags("head")).item(null, 0);
+                        IHTMLScriptElement scriptObject = (IHTMLScriptElement)document.createElement("script");
+                        scriptObject.type = @"text/javascript";
+                        scriptObject.text = "document.documentElement.addBehavior(\"foo.htc\");"+
+                                            "document.documentElement.attachEvent(\"onreadystatechange\", Notify);";
+                        ((HTMLHeadElement)head).appendChild((IHTMLDOMNode)scriptObject);
+
                     }
                     //获取登录名
                     else if (urlStr.Contains("/web/csp/epr.menu.csp?LogonFromVB="))
@@ -124,15 +139,23 @@ namespace DiagnoseAssistant1
 
                     ((DWebBrowserEvents2_Event)browser).DocumentComplete +=
                         new DWebBrowserEvents2_DocumentCompleteEventHandler(this.OnDocumentComplete);
+                    ((DWebBrowserEvents2_Event)browser).DownloadBegin +=
+                        new DWebBrowserEvents2_DownloadBeginEventHandler(this.DownloadBegin);
+                    ((DWebBrowserEvents2_Event)browser).DownloadComplete +=
+                       new DWebBrowserEvents2_DownloadCompleteEventHandler(this.DownloadComplete);
                     
-                }
-                else
-                {
+               }
+               else
+               {
                     ((DWebBrowserEvents2_Event)browser).DocumentComplete -=
                         new DWebBrowserEvents2_DocumentCompleteEventHandler(this.OnDocumentComplete);
+                    ((DWebBrowserEvents2_Event)browser).DownloadBegin -=
+                       new DWebBrowserEvents2_DownloadBeginEventHandler(this.DownloadBegin);
+                    ((DWebBrowserEvents2_Event)browser).DownloadComplete -=
+                      new DWebBrowserEvents2_DownloadCompleteEventHandler(this.DownloadComplete);
                     
                     browser = null;
-                }
+                }                
             }
             catch (Exception ex)
             {
@@ -179,6 +202,16 @@ namespace DiagnoseAssistant1
             {
                 crawler.crawl(browser.Document);
             }
+        }
+        void registerMonitor()
+        {
+            HTMLDocument document = browser.Document;
+
+            ChangeMonitor monitor = new ChangeMonitor();
+            IHTMLChangeSink changeSink = monitor;
+            IHTMLChangeLog changeLog = null;
+
+            ((IMarkupContainer2)document).CreateChangeLog(changeSink, out changeLog, 1, 1);
         }
         #endregion
 
@@ -227,6 +260,17 @@ namespace DiagnoseAssistant1
             }
         }
 
+        private void DownloadBegin()
+        {
+            //MessageBox.Show("Download Begin");
+            log.WriteLog("Download Begin");
+        }
+        private void DownloadComplete()
+        {
+            //MessageBox.Show("Download Complete");
+            log.WriteLog("Download Complete");
+        }
+
         [ComUnregisterFunction]
         public static void UnregisterBHO(Type type)
         {
@@ -245,5 +289,13 @@ namespace DiagnoseAssistant1
             }
         }
         #endregion
+    }
+
+    public class ChangeMonitor : IHTMLChangeSink
+    {
+        public void Notify()
+        {
+            MessageBox.Show("notified");
+        }
     }
 }
