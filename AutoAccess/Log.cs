@@ -6,8 +6,15 @@ namespace AutoAccess
     class Log
     {
         private object _logLock = new object();
-        const string _fileRoot = "c:\\fzzl\\crawler";
+        const string _fileRoot = "c:\\fzzl\\autoaccess";
         string fileName;
+        static Log()
+        {
+            if (!System.IO.Directory.Exists(_fileRoot))
+            {
+                System.IO.Directory.CreateDirectory(_fileRoot);
+            }
+        }
         public Log()
         {
             this.fileName = "AutoAccess.log";
