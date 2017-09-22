@@ -62,7 +62,7 @@ namespace DiagnoseAssistant1
                     //if (EpisodeRegexUtils.matchUrl(urlStr, "RisWeb3/ReportContent[.]aspx(.+?)LOC=549[&]STYLE=RIS3[-]4$"))
                     //检查报告
                     else if (urlStr.Contains("RisWeb3/ReportContent.aspx") || urlStr.Contains("csp/epr.chart.csp?PatientID=")
-                        || urlStr.ToUpper().EndsWith(".PDF"))
+                        || urlStr.ToUpper().EndsWith(".PDF") || urlStr.Equals("http://172.26.102.9/ekgweb/service/ShowEKGReport.aspx?OID=2412431||18"))
                     {
                         crawl(urlStr);
                     }
@@ -79,6 +79,7 @@ namespace DiagnoseAssistant1
                         scriptObject.text = "document.documentElement.addBehavior(\"foo.htc\");"+
                                             "document.documentElement.attachEvent(\"onreadystatechange\", Notify);";
                         ((HTMLHeadElement)head).appendChild((IHTMLDOMNode)scriptObject);
+                       
 
                     }
                     //获取登录名

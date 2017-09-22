@@ -13,6 +13,8 @@ namespace DiagnoseAssistant1.crawler
          * */
         public static Crawler getCrawler(string url)
         {
+            log.WriteLog("url=" + url);
+            log.WriteLog("sb===" + EpisodeRegexUtils.matchUrl(url, @"ShowEKGReport[.]aspx(.+?)OID=2412431||18"));
             //超声报告爬虫
             if (EpisodeRegexUtils.matchUrl(url, @"RisWeb3/ReportContent[.]aspx(.+?)LOC=549[&]STYLE=RIS3[-]4$"))
             {
@@ -44,7 +46,17 @@ namespace DiagnoseAssistant1.crawler
                     + ", EpisodeID=" + Crawler.episode.EpisodeID);
                 return crawler;
             }
-            //return new DefaultCrawler();
+            //TODO if matches heater function then get JCH, then create HearterFuncCrawler
+            else if (EpisodeRegexUtils.matchUrl(url, @"ShowEKGReport[.]aspx(.+?)OID=2412431||18"))
+            {
+                log.WriteLog("OID=" + EpisodeRegexUtils.getFirstMatchedFromString(url, @"SID=(.+?)"));
+                HearterFuncCrawler crawler = new HearterFuncCrawler();
+                string jch = EpisodeRegexUtils.getFirstMatchedFromString(url, @"SID=(.+?)$");
+                crawler.JCH = jch;
+                log.WriteLog("完成检查心功能报告内容爬虫构造，开始爬取检查心功能报告内容。检查号JCH='" + jch
+                    + "', 患者就诊信息Episode==null is " + (Crawler.episode == null));
+                return crawler;
+            }
             return null;
         }
     }

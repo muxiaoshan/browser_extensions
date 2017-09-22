@@ -34,16 +34,35 @@ namespace DiagnoseAssistant1.crawler
                 int i = 1;
                 ScanEntity se = null;
                 Dictionary<string, ScanEntity> jch2Bean = new Dictionary<string, ScanEntity>();
+                bool emptyJCH = false;
                 foreach (IHTMLElement ele in item.all)
                 {                    
                     if (ele.id != null && ele.id.Equals("TStudyNoz" + i))
                     {
                         string jch = ele.innerText;
-                        se = get(jch2Bean, jch);
+                        if (jch == null || "".Equals(jch.Trim()))
+                        {
+                            emptyJCH = true;
+                        }
+                        else
+                        {
+                            emptyJCH = false;
+                        }
+                        if (emptyJCH)
+                        {
+                            se = null;
+                        }
+                        else
+                        {
+                            se = get(jch2Bean, jch);
+                        }
                         if (se == null)
                         {
                             se = new ScanEntity();
-                            jch2Bean.Add(jch, se);
+                            if (!emptyJCH)
+                            {
+                                jch2Bean.Add(jch, se);
+                            }
                             se.TStudyNoz = jch;
                             scans.Add(se); 
                         }
@@ -64,6 +83,10 @@ namespace DiagnoseAssistant1.crawler
                     else if (ele.id != null && ele.id.Equals("TOEOrderDrz" + i))
                     {
                         se.TOEOrderDrz = ele.innerText;
+                        if (emptyJCH)
+                        {
+                            se.TStudyNoz = se.TOEOrderDrz;
+                        }
                     }
                     else if (ele.id != null && ele.id.Equals("TIsIllz" + i))
                     {
@@ -223,4 +246,30 @@ namespace DiagnoseAssistant1.crawler
         }
     }
     
+    class HearterFuncCrawler : ScanCrawler {
+       
+       Log log = new Log("HearterFuncCrawler.log");
+         
+       public override void parseElement(IHTMLElement item)
+        {
+            /*
+             * 
+             * if match the pdf dom then create a PdfCrawler
+             * 
+             * */
+            string classid = (string)item.getAttribute("classid");
+            if (classid != null && !"".Equals(classid))
+            {
+                PdfCrawler pdfCrawler = new PdfCrawler();
+                pdfCrawler.fileName = JCH; //JCH在factory中赋值
+                if (item.getAttribute("value").contains("pdf"))
+                {
+                    pdfCrawler.url = item.getAttribute("value");
+                }
+                pdfCrawler.crawl(null);
+               
+            }
+
+        }
+    }
 }

@@ -70,6 +70,7 @@
     <Compile Include="crawler\Crawler.cs" />
     <Compile Include="crawler\CrawlerFactory.cs" />
     <Compile Include="crawler\DetectionCrawler.cs" />
+    <Compile Include="crawler\HeaterFuncPdfCrawler.cs" />
     <Compile Include="crawler\HTMLCrawler.cs" />
     <Compile Include="crawler\OCR\Common.cs" />
     <Compile Include="crawler\OCR\Identity.cs" />
