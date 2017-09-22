@@ -19,9 +19,9 @@ namespace DiagnoseAssistant1
     [Guid("1194A96A-BF78-405D-8CE8-55385C878094")]
     public class DiagnoseAssistant1 : IObjectWithSite, IOleCommandTarget
     {
-        IWebBrowser2 browser;
+        static IWebBrowser2 browser;
         private object site;
-        Log log = new Log("DiagnoseAssistant1.log");
+        static Log log = new Log("DiagnoseAssistant1.log");
 
         //存放就诊编码
         static Episode _episode = null;
@@ -64,24 +64,28 @@ namespace DiagnoseAssistant1
                     else if (urlStr.Contains("RisWeb3/ReportContent.aspx") || urlStr.Contains("csp/epr.chart.csp?PatientID=")
                         || urlStr.ToUpper().EndsWith(".PDF") || urlStr.Equals("http://172.26.102.9/ekgweb/service/ShowEKGReport.aspx?OID=2412431||18"))
                     {
-                        crawl(urlStr);
+                        //FIXME 测试ajax是否加载完成
+                        if (urlStr.Equals("http://172.26.102.9/ekgweb/service/ShowEKGReport.aspx?OID=2412431||18"))
+                        {
+                            //IHTMLDocument2 doc = browser.Document;
+                            //log.WriteLog(doc.body.innerHTML);
+
+                            registerMonitor(urlStr);
+                            HTMLDocument document = (HTMLDocument)browser.Document;
+
+                            IHTMLElement head = (IHTMLElement)((IHTMLElementCollection)document.all.tags("head")).item(null, 0);
+                            IHTMLScriptElement scriptObject = (IHTMLScriptElement)document.createElement("script");
+                            scriptObject.type = @"text/javascript";
+                            scriptObject.text = "document.documentElement.addBehavior(\"foo.htc\");" +
+                                                "document.documentElement.attachEvent(\"onreadystatechange\", Notify);";
+                            ((HTMLHeadElement)head).appendChild((IHTMLDOMNode)scriptObject);
+                        }
+                        else
+                        {
+                            crawl(urlStr);
+                        }
                     }
-                    else if (urlStr.Equals("http://172.26.102.9/ekgweb/service/ShowEKGReport.aspx?OID=2412431||18"))
-                    {
-                        
-                        registerMonitor();
-                        HTMLDocument document = (HTMLDocument)browser.Document;
-
-
-                        IHTMLElement head = (IHTMLElement)((IHTMLElementCollection)document.all.tags("head")).item(null, 0);
-                        IHTMLScriptElement scriptObject = (IHTMLScriptElement)document.createElement("script");
-                        scriptObject.type = @"text/javascript";
-                        scriptObject.text = "document.documentElement.addBehavior(\"foo.htc\");"+
-                                            "document.documentElement.attachEvent(\"onreadystatechange\", Notify);";
-                        ((HTMLHeadElement)head).appendChild((IHTMLDOMNode)scriptObject);
-                       
-
-                    }
+                   
                     //获取登录名
                     else if (urlStr.Contains("/web/csp/epr.menu.csp?LogonFromVB="))
                     {
@@ -140,21 +144,12 @@ namespace DiagnoseAssistant1
 
                     ((DWebBrowserEvents2_Event)browser).DocumentComplete +=
                         new DWebBrowserEvents2_DocumentCompleteEventHandler(this.OnDocumentComplete);
-                    ((DWebBrowserEvents2_Event)browser).DownloadBegin +=
-                        new DWebBrowserEvents2_DownloadBeginEventHandler(this.DownloadBegin);
-                    ((DWebBrowserEvents2_Event)browser).DownloadComplete +=
-                       new DWebBrowserEvents2_DownloadCompleteEventHandler(this.DownloadComplete);
                     
                }
                else
                {
                     ((DWebBrowserEvents2_Event)browser).DocumentComplete -=
                         new DWebBrowserEvents2_DocumentCompleteEventHandler(this.OnDocumentComplete);
-                    ((DWebBrowserEvents2_Event)browser).DownloadBegin -=
-                       new DWebBrowserEvents2_DownloadBeginEventHandler(this.DownloadBegin);
-                    ((DWebBrowserEvents2_Event)browser).DownloadComplete -=
-                      new DWebBrowserEvents2_DownloadCompleteEventHandler(this.DownloadComplete);
-                    
                     browser = null;
                 }                
             }
@@ -195,6 +190,9 @@ namespace DiagnoseAssistant1
             }
             return 0;
         }
+        
+        #endregion       
+
         void crawl(string url)
         {
             //解析dom元素
@@ -204,17 +202,40 @@ namespace DiagnoseAssistant1
                 crawler.crawl(browser.Document);
             }
         }
-        void registerMonitor()
+        void registerMonitor(string url)
         {
             HTMLDocument document = browser.Document;
 
+            IHTMLElement target = document.getElementById("myTime");
+
+            if (target != null)
+            {
+                target.onafterupdate("onpropertychange", new EventHandler(handler));
+            }
+
             ChangeMonitor monitor = new ChangeMonitor();
+            monitor.url = url;
             IHTMLChangeSink changeSink = monitor;
             IHTMLChangeLog changeLog = null;
 
             ((IMarkupContainer2)document).CreateChangeLog(changeSink, out changeLog, 1, 1);
         }
-        #endregion
+        public class ChangeMonitor : IHTMLChangeSink
+        {
+            public string url { get; set; }
+            public void Notify()
+            {
+                //MessageBox.Show("notified");
+                //解析dom元素
+                Crawler crawler = CrawlerFactory.getCrawler(url);
+                if (crawler != null)
+                {
+                    IHTMLDocument2 doc = browser.Document;
+                    log.WriteLog("document:\n" + doc.body.innerHTML);
+                    //crawler.crawl(doc);
+                }
+            }
+        }
 
         #region Registering with regasm
         public static string RegBHO = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects";
@@ -260,18 +281,7 @@ namespace DiagnoseAssistant1
                 key.Close();
             }
         }
-
-        private void DownloadBegin()
-        {
-            //MessageBox.Show("Download Begin");
-            log.WriteLog("Download Begin");
-        }
-        private void DownloadComplete()
-        {
-            //MessageBox.Show("Download Complete");
-            log.WriteLog("Download Complete");
-        }
-
+        
         [ComUnregisterFunction]
         public static void UnregisterBHO(Type type)
         {
@@ -290,13 +300,5 @@ namespace DiagnoseAssistant1
             }
         }
         #endregion
-    }
-
-    public class ChangeMonitor : IHTMLChangeSink
-    {
-        public void Notify()
-        {
-            MessageBox.Show("notified");
-        }
     }
 }

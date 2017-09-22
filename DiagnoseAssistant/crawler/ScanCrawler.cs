@@ -257,18 +257,28 @@ namespace DiagnoseAssistant1.crawler
              * if match the pdf dom then create a PdfCrawler
              * 
              * */
-            string classid = (string)item.getAttribute("classid");
-            if (classid != null && !"".Equals(classid))
+            if (item.tagName.ToLower().Equals("param"))
             {
-                PdfCrawler pdfCrawler = new PdfCrawler();
-                pdfCrawler.fileName = JCH; //JCH在factory中赋值
-                if (item.getAttribute("value").contains("pdf"))
+                if (item.getAttribute("value") != null)
                 {
-                    pdfCrawler.url = item.getAttribute("value");
+                    string value = (string)item.getAttribute("value");
+                    if (value != null && !"".Equals(value))
+                    {
+                        HeaterFuncPdfCrawler pdfCrawler = new HeaterFuncPdfCrawler();
+                        pdfCrawler.fileName = JCH; //JCH在factory中赋值
+                        
+                        if (value.Contains("pdf"))
+                        {
+                            value = value.Substring(value.IndexOf("\\") + 1);
+                            pdfCrawler.url = "http://172.26.102.9/ekgweb/reports/" + value;
+                        }
+                        pdfCrawler.crawl(null);
+
+                    }
                 }
-                pdfCrawler.crawl(null);
-               
+                
             }
+            
 
         }
     }

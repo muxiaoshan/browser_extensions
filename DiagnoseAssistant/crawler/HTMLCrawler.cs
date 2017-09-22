@@ -16,7 +16,7 @@ namespace DiagnoseAssistant1.crawler
         //读取网页内容
         public void ReadDoc(IHTMLDocument2 doc)
         {
-            log.WriteLog("解析网页【" + doc.location.href + "】DOM结构");
+            //log.WriteLog("解析网页【" + doc.location.href + "】DOM结构");
             foreach (IHTMLElement item in doc.all)
             {
                 if (item != null && item.tagName != null)

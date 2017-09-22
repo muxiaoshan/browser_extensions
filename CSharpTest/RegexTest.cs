@@ -11,7 +11,7 @@ namespace DiagnoseAssistant1
     {
         public static void Main()
         {
-            test7();
+            test8();
         }
         static void test1()
         {
@@ -147,6 +147,20 @@ namespace DiagnoseAssistant1
             Console.WriteLine("dotIdx=" + dotIdx + ",slashIdx=" + slashIdx);
             string filename = str.Substring(slashIdx + 1, (dotIdx - slashIdx - 1));
             Console.WriteLine("filename=" + filename);
+        }
+
+        static void test8()
+        {
+            string str = "http://172.26.102.9/ekgweb/service/ShowEKGReport.aspx?OID=2412431||18";
+            Regex rxPEID;
+            rxPEID = new Regex(@"OID=(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+           
+            Match m = rxPEID.Match(str);
+            if (m.Success)
+            {
+                Console.WriteLine("JCH="+ m.Groups[1].ToString());
+            }
+
         }
     }
 }
