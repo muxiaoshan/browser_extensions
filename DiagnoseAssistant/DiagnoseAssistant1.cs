@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
+﻿using DiagnoseAssistant1.crawler;
 using Microsoft.Win32;
 using mshtml;
 using SHDocVw;
-using System.Threading;
-using System.Text.RegularExpressions;
-using DiagnoseAssistant1.crawler;
+using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Expando;
+using System.Windows.Forms;
 
 namespace DiagnoseAssistant1
 {
@@ -17,7 +14,8 @@ namespace DiagnoseAssistant1
     [ClassInterface(ClassInterfaceType.None)]
     //个性化GUID
     [Guid("1194A96A-BF78-405D-8CE8-55385C878094")]
-    public class DiagnoseAssistant1 : IObjectWithSite, IOleCommandTarget
+    [ComDefaultInterface(typeof(JavaScriptExtension))]
+    public class DiagnoseAssistant1 : IObjectWithSite, IOleCommandTarget, JavaScriptExtension
     {
         static IWebBrowser2 browser;
         private object site;
@@ -69,7 +67,7 @@ namespace DiagnoseAssistant1
                         {
                             //IHTMLDocument2 doc = browser.Document;
                             //log.WriteLog(doc.body.innerHTML);
-
+                            /*
                             registerMonitor(urlStr);
                             HTMLDocument document = (HTMLDocument)browser.Document;
 
@@ -79,6 +77,24 @@ namespace DiagnoseAssistant1
                             scriptObject.text = "document.documentElement.addBehavior(\"foo.htc\");" +
                                                 "document.documentElement.attachEvent(\"onreadystatechange\", Notify);";
                             ((HTMLHeadElement)head).appendChild((IHTMLDOMNode)scriptObject);
+                             * */
+                            //给window扩展一个插件属性
+                            dynamic Window = ((IHTMLDocument2)browser.Document).parentWindow;
+                            IExpando ScriptObject = (IExpando)Window;
+                            PropertyInfo MyExtension = ScriptObject.GetProperty("MyExtension", BindingFlags.Default);
+                            if (MyExtension == null) MyExtension = ScriptObject.AddProperty("MyExtension");
+                            MyExtension.SetValue(ScriptObject, this, null);
+                            
+                            //修改his的js方法，让ajax返回调用window的扩展属性
+                            HTMLDocument document = (HTMLDocument)browser.Document;                            
+                            IHTMLElement body = (IHTMLElement)((IHTMLElementCollection)document.all.tags("body")).item(null, 0);
+                            IHTMLScriptElement scriptObject = (IHTMLScriptElement)document.createElement("script");
+                            scriptObject.type = @"text/javascript";
+                            scriptObject.text = "Dispaly=function(){document.getElementById ('myTime').innerHTML = req.responseText;window.MyExtension.callBHO(req.responseText);}";
+                            ((HTMLBody)body).appendChild((IHTMLDOMNode)scriptObject);
+                                                         
+                            /*((HTMLDocumentEvents_Event)(browser.Document)).ondataavailable += new HTMLDocumentEvents_ondataavailableEventHandler(dataavaliable);*/
+                            /*browser.Navigate(@"javascript:Dispaly=new function(){document.getElementById ('myTime').innerHTML = req.responseText;window.MyExtension.callBHO('hello sam.');}");*/
                         }
                         else
                         {
@@ -112,7 +128,7 @@ namespace DiagnoseAssistant1
             }
             catch (Exception ex)
             {
-                log.WriteLog("DiagnoseAssistant1 OnDocumentComplete exception occured." + ex);
+                log.WriteLog("DiagnoseAssistant1 OnDocumentComplete exception occured." + ex.ToString() + ex.StackTrace);
                 MessageBox.Show(ex.Message);
             }
         }
@@ -192,7 +208,23 @@ namespace DiagnoseAssistant1
         }
         
         #endregion       
+       
+        #region business methods
 
+        public void dataavaliable()
+        {
+            log.WriteLog("dataavaliable");
+        }
+        /// <summary>
+        /// js调用BHO方法
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public string callBHO(string s)
+        {
+            log.WriteLog("In callBHO." + s);
+            return null;
+        }
         void crawl(string url)
         {
             //解析dom元素
@@ -205,16 +237,9 @@ namespace DiagnoseAssistant1
         void registerMonitor(string url)
         {
             HTMLDocument document = browser.Document;
-
-            IHTMLElement target = document.getElementById("myTime");
-
-            if (target != null)
-            {
-                target.onafterupdate("onpropertychange", new EventHandler(handler));
-            }
-
             ChangeMonitor monitor = new ChangeMonitor();
             monitor.url = url;
+            monitor.document = document;
             IHTMLChangeSink changeSink = monitor;
             IHTMLChangeLog changeLog = null;
 
@@ -222,20 +247,27 @@ namespace DiagnoseAssistant1
         }
         public class ChangeMonitor : IHTMLChangeSink
         {
+            public HTMLDocument document { get; set; }
             public string url { get; set; }
             public void Notify()
             {
-                //MessageBox.Show("notified");
-                //解析dom元素
-                Crawler crawler = CrawlerFactory.getCrawler(url);
-                if (crawler != null)
+                MessageBox.Show("document.readyState: " + document.readyState);
+                if ("4".Equals(document.readyState))
                 {
-                    IHTMLDocument2 doc = browser.Document;
-                    log.WriteLog("document:\n" + doc.body.innerHTML);
-                    //crawler.crawl(doc);
+                    MessageBox.Show("notified");
+                    //解析dom元素
+                    Crawler crawler = CrawlerFactory.getCrawler(url);
+                    if (crawler != null)
+                    {
+                        IHTMLDocument2 doc = browser.Document;
+                        log.WriteLog("document:\n" + doc.body.innerHTML);
+                        //crawler.crawl(doc);
+                    }
                 }
+                
             }
         }
+        #endregion
 
         #region Registering with regasm
         public static string RegBHO = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects";

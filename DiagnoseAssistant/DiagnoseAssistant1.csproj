@@ -84,6 +84,7 @@
     <Compile Include="globalKeyboardHook.cs" />
     <Compile Include="IObjectWithSite.cs" />
     <Compile Include="DiagnoseAssistant1.cs" />
+    <Compile Include="JavaScriptExtension.cs" />
     <Compile Include="KeyboardHook.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="pdfstrategy\TextWithFontExtractionStrategy.cs" />
