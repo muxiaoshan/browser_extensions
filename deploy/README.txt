@@ -3,7 +3,7 @@
 
 2、把deploy放到任意目录，命令行下进入deploy所在目录
 
-3、双击install.bat执行辅助诊疗IE插件的自动安装，windows xp系统下安装时，弹出“运行身份”选择框，在下列用户选项中选择Administrator，并输入密码；
+3、双击install.bat执行爬虫IE插件的自动安装，windows xp系统下安装时，弹出“运行身份”选择框，在下列用户选项中选择Administrator，并输入密码；
 
 4、IE打开HIS系统进行访问
 
