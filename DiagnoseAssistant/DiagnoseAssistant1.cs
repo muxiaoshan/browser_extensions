@@ -65,24 +65,11 @@ namespace DiagnoseAssistant1
                         //FIXME 测试ajax是否加载完成
                         if (urlStr.Equals("http://172.26.102.9/ekgweb/service/ShowEKGReport.aspx?OID=2412431||18"))
                         {
-                            //IHTMLDocument2 doc = browser.Document;
-                            //log.WriteLog(doc.body.innerHTML);
-                            /*
-                            registerMonitor(urlStr);
-                            HTMLDocument document = (HTMLDocument)browser.Document;
-
-                            IHTMLElement head = (IHTMLElement)((IHTMLElementCollection)document.all.tags("head")).item(null, 0);
-                            IHTMLScriptElement scriptObject = (IHTMLScriptElement)document.createElement("script");
-                            scriptObject.type = @"text/javascript";
-                            scriptObject.text = "document.documentElement.addBehavior(\"foo.htc\");" +
-                                                "document.documentElement.attachEvent(\"onreadystatechange\", Notify);";
-                            ((HTMLHeadElement)head).appendChild((IHTMLDOMNode)scriptObject);
-                             * */
                             //给window扩展一个插件属性
                             dynamic Window = ((IHTMLDocument2)browser.Document).parentWindow;
                             IExpando ScriptObject = (IExpando)Window;
-                            PropertyInfo MyExtension = ScriptObject.GetProperty("MyExtension", BindingFlags.Default);
-                            if (MyExtension == null) MyExtension = ScriptObject.AddProperty("MyExtension");
+                            PropertyInfo MyExtension = ScriptObject.GetProperty("BHOExtension", BindingFlags.Default);
+                            if (MyExtension == null) MyExtension = ScriptObject.AddProperty("BHOExtension");
                             MyExtension.SetValue(ScriptObject, this, null);
                             
                             //修改his的js方法，让ajax返回调用window的扩展属性
@@ -90,12 +77,9 @@ namespace DiagnoseAssistant1
                             IHTMLElement body = (IHTMLElement)((IHTMLElementCollection)document.all.tags("body")).item(null, 0);
                             IHTMLScriptElement scriptObject = (IHTMLScriptElement)document.createElement("script");
                             scriptObject.type = @"text/javascript";
-                            scriptObject.text = "Dispaly=function(){document.getElementById ('myTime').innerHTML = req.responseText;window.MyExtension.callBHO(req.responseText);}";
+                            scriptObject.text = "Dispaly=function(){document.getElementById ('myTime').innerHTML = req.responseText;window.BHOExtension.callBHO('" + urlStr + "', req.responseText);}";
                             ((HTMLBody)body).appendChild((IHTMLDOMNode)scriptObject);
-                                                         
-                            /*((HTMLDocumentEvents_Event)(browser.Document)).ondataavailable += new HTMLDocumentEvents_ondataavailableEventHandler(dataavaliable);*/
-                            /*browser.Navigate(@"javascript:Dispaly=new function(){document.getElementById ('myTime').innerHTML = req.responseText;window.MyExtension.callBHO('hello sam.');}");*/
-                        }
+                       }
                         else
                         {
                             crawl(urlStr);
@@ -210,19 +194,26 @@ namespace DiagnoseAssistant1
         #endregion       
        
         #region business methods
-
-        public void dataavaliable()
-        {
-            log.WriteLog("dataavaliable");
-        }
         /// <summary>
         /// js调用BHO方法
         /// </summary>
-        /// <param name="s"></param>
+        /// <param name="url">心功能的页面访问路径</param>
+        /// <param name="ajaxResponse"></param>
         /// <returns></returns>
-        public string callBHO(string s)
+        public string callBHO(string url, string ajaxResponse)
         {
-            log.WriteLog("In callBHO." + s);
+            log.WriteLog("In callBHO." + url + ajaxResponse);
+            //解析dom元素
+            Crawler crawler = CrawlerFactory.getCrawler(url); //根据路径构造HeartFuncPdfCrawler
+            if (crawler != null)
+            {
+                if (crawler.GetType().Equals(typeof(HeartFuncPdfCrawler)))
+                {
+                    HeartFuncPdfCrawler heartFuncPdfCrawler = (HeartFuncPdfCrawler)crawler;
+                    heartFuncPdfCrawler.url = null;//TODO 从ajaxResponse中解析得到pdf路径
+                    heartFuncPdfCrawler.crawl(null);
+                }
+            }
             return null;
         }
         void crawl(string url)
@@ -232,39 +223,6 @@ namespace DiagnoseAssistant1
             if (crawler != null)
             {
                 crawler.crawl(browser.Document);
-            }
-        }
-        void registerMonitor(string url)
-        {
-            HTMLDocument document = browser.Document;
-            ChangeMonitor monitor = new ChangeMonitor();
-            monitor.url = url;
-            monitor.document = document;
-            IHTMLChangeSink changeSink = monitor;
-            IHTMLChangeLog changeLog = null;
-
-            ((IMarkupContainer2)document).CreateChangeLog(changeSink, out changeLog, 1, 1);
-        }
-        public class ChangeMonitor : IHTMLChangeSink
-        {
-            public HTMLDocument document { get; set; }
-            public string url { get; set; }
-            public void Notify()
-            {
-                MessageBox.Show("document.readyState: " + document.readyState);
-                if ("4".Equals(document.readyState))
-                {
-                    MessageBox.Show("notified");
-                    //解析dom元素
-                    Crawler crawler = CrawlerFactory.getCrawler(url);
-                    if (crawler != null)
-                    {
-                        IHTMLDocument2 doc = browser.Document;
-                        log.WriteLog("document:\n" + doc.body.innerHTML);
-                        //crawler.crawl(doc);
-                    }
-                }
-                
             }
         }
         #endregion

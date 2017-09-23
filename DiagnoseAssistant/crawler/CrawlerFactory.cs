@@ -32,7 +32,7 @@ namespace DiagnoseAssistant1.crawler
                 int dotIdx = url.LastIndexOf(".");
                 int slashIdx = url.LastIndexOf("/");            
                 string fileName = url.Substring(slashIdx + 1, (dotIdx - slashIdx - 1));
-                crawler.fileName = fileName;
+                crawler.JCH = fileName;
                 crawler.url = url;
                 log.WriteLog("完成PDF报告爬虫构造，开始爬取PDF报告内容。fileName=" + fileName); 
                 return crawler;
@@ -49,7 +49,7 @@ namespace DiagnoseAssistant1.crawler
             //TODO if matches heater function then get JCH, then create HearterFuncCrawler
             else if (EpisodeRegexUtils.matchUrl(url, @"ShowEKGReport[.]aspx(.+?)OID=2412431[|]{2}18"))
             {
-                HearterFuncCrawler crawler = new HearterFuncCrawler();
+                HeartFuncPdfCrawler crawler = new HeartFuncPdfCrawler();
                 string jch = EpisodeRegexUtils.getFirstMatchedFromString(url, @"OID=(.+?)$");
                 crawler.JCH = jch;
                 log.WriteLog("完成检查心功能报告内容爬虫构造，开始爬取检查心功能报告内容。检查号JCH='" + jch

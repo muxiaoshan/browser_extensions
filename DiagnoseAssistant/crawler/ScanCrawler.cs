@@ -244,42 +244,5 @@ namespace DiagnoseAssistant1.crawler
             }
 
         }
-    }
-    
-    class HearterFuncCrawler : ScanCrawler {
-       
-       Log log = new Log("HearterFuncCrawler.log");
-         
-       public override void parseElement(IHTMLElement item)
-        {
-            /*
-             * 
-             * if match the pdf dom then create a PdfCrawler
-             * 
-             * */
-            if (item.tagName.ToLower().Equals("param"))
-            {
-                if (item.getAttribute("value") != null)
-                {
-                    string value = (string)item.getAttribute("value");
-                    if (value != null && !"".Equals(value))
-                    {
-                        HeaterFuncPdfCrawler pdfCrawler = new HeaterFuncPdfCrawler();
-                        pdfCrawler.fileName = JCH; //JCH在factory中赋值
-                        
-                        if (value.Contains("pdf"))
-                        {
-                            value = value.Substring(value.IndexOf("\\") + 1);
-                            pdfCrawler.url = "http://172.26.102.9/ekgweb/reports/" + value;
-                        }
-                        pdfCrawler.crawl(null);
-
-                    }
-                }
-                
-            }
-            
-
-        }
-    }
+    }       
 }

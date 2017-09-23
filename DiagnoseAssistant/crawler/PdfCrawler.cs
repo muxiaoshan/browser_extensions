@@ -14,7 +14,7 @@ namespace DiagnoseAssistant1.crawler
     class PdfCrawler : Crawler
     {
         Log log = new Log("PdfCrawler.log");
-        public string fileName { get; set;} //文件名
+        public string JCH { get; set;} //检查号
         public string url { get; set; } //访问路径
         public override void crawl(IHTMLDocument2 document)
         {
@@ -25,7 +25,7 @@ namespace DiagnoseAssistant1.crawler
                 string bgsj = get(scanItem, "BGSJ");
                 string updateSql = "update tb_hyft_jcjl set JCSJ = '" + jcsj + "', BGSJ='" + bgsj
                             + "', BGRQ='"+ bgsj
-                            + "' where JCH='" + fileName + "'";
+                            + "' where JCH='" + JCH + "'";
                 log.WriteLog("更新报告检查时间与报告时间、报告日期，sql=" + updateSql);
                 sqlOp.executeUpdate(updateSql);
                 //log.WriteLog("读取到的PDF内容:" + contents.ToString());
@@ -33,7 +33,7 @@ namespace DiagnoseAssistant1.crawler
                 string YXBXHJCSJ = get(imagesItem, "YXBXHJCSJ");
                 string JCZDHTS = get(imagesItem, "JCZDHTS");
                 string updateJCZDSql = "update tb_hyft_jcjl set YXBXHJCSJ = '" + YXBXHJCSJ + "', JCZDHTS='" + JCZDHTS
-                            + "' where JCH='" + fileName + "'";
+                            + "' where JCH='" + JCH + "'";
                 sqlOp.executeUpdate(updateJCZDSql);
                 log.WriteLog("更新影像与建议数据，sql=" + updateJCZDSql);
                 sqlOp.executeUpdate(updateJCZDSql);

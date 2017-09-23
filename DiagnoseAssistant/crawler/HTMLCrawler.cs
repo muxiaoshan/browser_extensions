@@ -11,7 +11,10 @@ namespace DiagnoseAssistant1.crawler
         Log log = new Log("HTMLCrawler.log");
         public override void crawl(IHTMLDocument2 document)
         {
-            ReadDoc(document);
+            if (document != null)
+            {
+                ReadDoc(document);
+            }
         }
         //读取网页内容
         public void ReadDoc(IHTMLDocument2 doc)

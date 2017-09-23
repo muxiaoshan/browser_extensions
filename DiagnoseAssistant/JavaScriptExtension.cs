@@ -12,6 +12,6 @@ namespace DiagnoseAssistant1
     public interface JavaScriptExtension
     {
         [DispId(1)]
-        string callBHO(string s);
+        string callBHO(string url, string s);
     }
 }
