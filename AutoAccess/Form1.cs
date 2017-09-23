@@ -24,7 +24,6 @@ namespace AutoAccess
             autoaccess();
         }
 
-        
         private void autoaccess()
         {
             try
@@ -34,7 +33,6 @@ namespace AutoAccess
 
                 ie.Link(Find.ById("Logon")).Click();
 
-                
                 IE ieAfterLogon = IE.AttachTo<IE>(Find.ByUrl("http://172.26.100.35/dthealth/web/csp/logon.csp"));                
                 Frame TRAK_main = ieAfterLogon.Frame(Find.ByName("TRAK_main"));
                 Table tDHCDocInPatientList = TRAK_main.Table("tDHCDocInPatientList");                
@@ -46,7 +44,6 @@ namespace AutoAccess
             }
             catch (Exception ex)
             {
-
                 log.WriteLog("访问HIS出错，" + ex.ToString() + ex.StackTrace + ex.Source);
             }
         }
@@ -84,6 +81,12 @@ namespace AutoAccess
             Frame maindata = TRAK_main.Frame("maindata");
             Div scanResultDiv = maindata.Div("chart23");
             scanResultDiv.Click();
+            try
+            {
+                //打开检查结果列表，等待完成，超时时间30s，以便爬虫完成列表爬取
+                ieAfterPatientSelected.WaitForComplete(30);
+            }
+            catch (Exception){}
             //打开检查结果列表
             Frame dataframe = maindata.Frame("dataframe");
             Table tDHCRisclinicQueryOEItem = dataframe.Table("tDHCRisclinicQueryOEItem");
@@ -113,7 +116,7 @@ namespace AutoAccess
                         newWind = IE.AttachToNoWait<IE>(Find.ByUrl(rxPEID));
                         
                         //内含iframe时，将抛出异常WatiN.Core.Exceptions.TimeoutException: Timeout while waiting for frame document becoming available
-                        newWind.WaitForComplete(180);//请求扫描等报告时，等待完成，超时时间180s
+                        newWind.WaitForComplete(120);//请求扫描等报告时，等待完成，超时时间120s
                         
                         newWind.Close();
                         log.WriteLog("正常关闭【" + reportName + "】报告窗口");
@@ -122,8 +125,11 @@ namespace AutoAccess
                     {
                         log.WriteLog("无法获取并关闭【" + reportName + "】报告窗口，稍后强制关闭：" + ex.ToString() + ex.StackTrace);
                         try
-                        {                            
-                            newWind.Close();
+                        {
+                            if (newWind != null)
+                            {
+                                newWind.Close();
+                            }
                             log.WriteLog("强制关闭【" + reportName + "】报告窗口");
                         }
                         catch (Exception ex1)
