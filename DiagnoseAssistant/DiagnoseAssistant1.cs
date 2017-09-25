@@ -203,14 +203,15 @@ namespace DiagnoseAssistant1
         public string callBHO(string url, string ajaxResponse)
         {
             log.WriteLog("In callBHO." + url + ajaxResponse);
-            //解析dom元素
+            String  ajaxUrl = EpisodeRegexUtils.getFirstMatchedFromString(ajaxResponse, "<param[ ]+?name=\"SRC\"[ ]+?value=\"([^\"]+?)\"");
+            ajaxUrl = ajaxUrl.Replace("..", "").Replace("\\","/");
             Crawler crawler = CrawlerFactory.getCrawler(url); //根据路径构造HeartFuncPdfCrawler
             if (crawler != null)
             {
                 if (crawler.GetType().Equals(typeof(HeartFuncPdfCrawler)))
                 {
                     HeartFuncPdfCrawler heartFuncPdfCrawler = (HeartFuncPdfCrawler)crawler;
-                    heartFuncPdfCrawler.url = null;//TODO 从ajaxResponse中解析得到pdf路径
+                    heartFuncPdfCrawler.url = ajaxUrl;
                     heartFuncPdfCrawler.crawl(null);
                 }
             }

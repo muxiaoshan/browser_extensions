@@ -11,7 +11,7 @@ namespace DiagnoseAssistant1
     {
         public static void Main()
         {
-            test8();
+            test9();
         }
         static void test1()
         {
@@ -159,6 +159,20 @@ namespace DiagnoseAssistant1
             if (m.Success)
             {
                 Console.WriteLine("JCH="+ m.Groups[1].ToString());
+            }
+
+        }
+        static void test9()
+        {
+            string str = "<param name=\"SRC\" value=\"..\\reports\f90e747d-4968-4d59-a86b-3c7bccd9e031.pdf\">";
+            Regex rxPEID;
+            rxPEID = new Regex("<param name=\"SRC\" value=\"([^\"]+?)\"", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            String ab = EpisodeRegexUtils.getFirstMatchedFromString(str, @"<param name=\'SRC\' value=\'([^\']+?)\'");
+            //http://172.26.102.9/ekgweb/reports/e214ea49-8b5d-43d9-beb4-0edf84fb26f3.pdf
+            Match m = rxPEID.Match(str);
+            if (m.Success)
+            {
+                Console.WriteLine("value=" + m.Groups[1].ToString());
             }
 
         }
